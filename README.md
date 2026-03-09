@@ -5,9 +5,8 @@ inter-related modules in a modified Bayesian inference approach called “cuttin
 that is robust to their misspecification. Recent work uses a two module approach, where all
 d marginals form a single module, to robustify inference for the marginals against copula
 function misspecification, or vice versa. However, marginals can exhibit differing levels of
-misspecification, and it is attractive to assign each its own module with an individual in-
-fluence parameter controlling its contribution to a joint semi-modular inference (SMI) pos-
-terior. This generalizes existing two module SMI methods, which interpolate between cut
+misspecification, and it is attractive to assign each its own module with an individual influence parameter controlling its contribution 
+to a joint semi-modular inference (SMI) posterior. This generalizes existing two module SMI methods, which interpolate between cut
 and conventional posteriors using a single influence parameter. We develop a novel copula
 SMI method and select the influence parameters using Bayesian optimization. It provides
 an efficient continuous relaxation of the discrete optimization problem over 2d cut/uncut
