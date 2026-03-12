@@ -1,4 +1,4 @@
-# Bayesian Modular Inference for Copula Models with
+# Bayesian Modular Inference for Copula Models with Potentially Misspecified Marginals
 Copula models of multivariate data are popular because they allow separate specification
 of marginal distributions and the copula function. These components can be treated as
 inter-related modules in a modified Bayesian inference approach called “cutting feedback”
