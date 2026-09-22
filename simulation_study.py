@@ -65,6 +65,9 @@ ll2 = [[[] for _ in range(len(grid))] for _ in range(len(grid))]
 llc = [[[] for _ in range(len(grid))] for _ in range(len(grid))]
 utility = [[[] for _ in range(len(grid))] for _ in range(len(grid))]
 
+y_dgp = torch.from_numpy(joint_dist.rvs(100000,random_state=12345))
+f_star1_y = torch.from_numpy(joint_dist.marginals[0].logpdf(y_dgp[:,0]))
+f_star2_y = torch.from_numpy(joint_dist.marginals[1].logpdf(y_dgp[:,1]))
 for run in range(anz_runs):
     y = pickle.load(open('results_simulation/traindata_'+str(run+1)+'.p', 'rb')).numpy()
     n = len(y)
@@ -83,16 +86,21 @@ for run in range(anz_runs):
                 post_samples.append(torch.hstack([psi.flatten(),theta.flatten()]))
             post_samples = torch.vstack(post_samples)
             post_samples[:,0] = torch.special.expit(post_samples[:,0])
-            post_samples[:,[2,4]] = post_samples[:,[2,4]].exp()
+            post_samples[:,[2,4]] = post_samples[:,[2,4]].exp().sqrt()
             tau,mu1,sigma1,mu2,sigma2 = post_samples[:,0],post_samples[:,1],post_samples[:,2],post_samples[:,3],post_samples[:,4]
             
-            ll1[j1][j2].append((.5*((mu1+1).pow(2)+sigma1.pow(2)-1)-sigma1.log()).mean().item())
-            ll2[j1][j2].append((-2*mu2-.5*torch.log(2*torch.pi*torch.e*sigma2.pow(2))+torch.exp(mu2+sigma2.pow(2)/2)).mean().item())
+            ll1_local = []
+            ll2_local = []
+            for j in range(len(post_samples)):
+                ll1_local.append((f_star1_y - torch.distributions.log_normal.LogNormal(mu1[j],sigma1[j]).log_prob(y_dgp[:,0])).mean().item())
+                ll2_local.append((f_star2_y - torch.distributions.log_normal.LogNormal(mu2[j],sigma2[j]).log_prob(y_dgp[:,1])).mean().item())
+            ll1[j1][j2].append(np.mean(ll1_local))
+            ll2[j1][j2].append(np.mean(ll2_local))
             llc[j1][j2].append((0.7-tau).pow(2).mean().item())
             u = []
-            for j in range(10000):
-                distr3_hat = CopulaDistribution(copula=IndependenceCopula(), marginals=[stats.lognorm(s=sigma1[j].numpy(),scale=np.exp(mu1[j].numpy())),stats.lognorm(s=sigma2[j].numpy(),scale=np.exp(mu2[j].numpy()))])
-                u.append(distr3_hat.logpdf(y).mean())
+            for j in range(len(tau)):
+                distr_hat = CopulaDistribution(copula = GumbelCopula(theta=GumbelCopula().theta_from_tau(tau[j].numpy())), marginals=[stats.lognorm(s=sigma1[j].numpy(),scale=np.exp(mu1[j].numpy())),stats.lognorm(s=sigma2[j].numpy(),scale=np.exp(mu2[j].numpy()))])
+                u.append(distr_hat.logpdf(y).mean())
             utility[j1][j2].append(np.mean(u))
 
 # generate figure
