@@ -26,8 +26,18 @@ b) minimal_working_example.py: Contains a minimal working example on a single si
 
 c) Simulation study: simulation_study.py contains the code necessary to reproduce the simulation study and generate the figures presented in the manuscript.
 
-d) Financial application: financial_application.py contains code to train the fully cut, conventional posterior, and optimal SMI models on the financial data. Plots are generated with financial_application_plots.py, which can be run after financial_application.py has run successfully. The preprocessed data are provided in yields.csv.
+d) highdim_simulations.py: contains the code to reproduce the additional high-dimensional simulation study presented in the Supporting Information. The simulated data set is provided as data_highdimensional.p.
+
+e) Financial application: financial_application.py contains code to train the fully cut, conventional posterior, and optimal SMI models on the financial data. Plots are generated with financial_application_plots.py, which can be run after financial_application.py has run successfully. The preprocessed data are provided in yields.csv.
 
 ## Citation
 
-If you use this work, please cite our paper. 
+If you use this work, please cite
+
+```bibtex
+@article{KocFraSmiNot2026,
+  title={Bayesian Modular Inference for Copula Models with Potentially Misspecified Marginals},
+  author={Kock, Lucas and Frazier, David T and Smith, Michael Stanley and Nott, David J},
+  journal={arXiv preprint arXiv:2603.11457},
+  year={2026}
+}
